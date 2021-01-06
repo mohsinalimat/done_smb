@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include done_smb *.css
+recursive-include done_smb *.csv
+recursive-include done_smb *.html
+recursive-include done_smb *.ico
+recursive-include done_smb *.js
+recursive-include done_smb *.json
+recursive-include done_smb *.md
+recursive-include done_smb *.png
+recursive-include done_smb *.py
+recursive-include done_smb *.svg
+recursive-include done_smb *.txt
+recursive-exclude done_smb *.pyc
