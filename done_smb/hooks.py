@@ -107,7 +107,7 @@ scheduler_events = {
 # 	"monthly": [
 # 		"done_smb.tasks.monthly"
 # 	]
-# }
+}
 
 # Testing
 # -------
