@@ -95,8 +95,8 @@ scheduler_events = {
 # 		"done_smb.tasks.all"
 # 	],
 	"daily": [
-		"done_smp.__init__.leave_allocate_annual",
-        "done_smp.__init__.leave_allocate_sick"
+		"done_smb.__init__.leave_allocate_annual",
+        "done_smb.__init__.leave_allocate_sick"
 # 	],
 # 	"hourly": [
 # 		"done_smb.tasks.hourly"
