@@ -5,7 +5,7 @@ frappe.ui.form.on('Salary Certificate', {
 	onload:function(frm){
 		console.log("loaded")
 		frappe.call({
-			method: 'erpnext.hr.doctype.salary_certificate.salary_certificate.getuser',
+			method: 'done_smb.done_smb.doctype.salary_certificate.salary_certificate.getuser',
 			args: {
 				'user':frappe.session.user_email,
 			},
