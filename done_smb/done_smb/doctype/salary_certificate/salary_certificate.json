@@ -16,9 +16,11 @@
  "fields": [
   {
    "fieldname": "employee_id",
-   "fieldtype": "Read Only",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Employee Id"
+   "label": "Employee Id",
+   "options": "Employee",
+   "reqd": 1
   },
   {
    "fieldname": "employee_name",
@@ -58,7 +60,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2021-01-07 12:25:47.943753",
+ "modified": "2021-01-08 10:45:07.175470",
  "modified_by": "Administrator",
  "module": "Done Smb",
  "name": "Salary Certificate",
@@ -85,18 +87,6 @@
    "read": 1,
    "report": 1,
    "role": "Employee",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Manager",
    "share": 1,
    "write": 1
   },
