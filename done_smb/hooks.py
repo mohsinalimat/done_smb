@@ -128,3 +128,14 @@ scheduler_events = {
 # 	"Task": "done_smb.task.get_dashboard_data"
 # }
 
+
+jenv = {
+	"methods":[
+		"get_date:done_smb.get_date",
+		"get_details:done_smb.get_details",
+		"salary_detail:done_smb.salary_detail",
+		"employee_detail_arabic:done_smb.employee_detail_arabic",
+		"annual_leave_form:done_smb.annual_leave_form",
+		"get_leave:erpnext.hr.doctype.leave_application.leave_application.get_leave_details"
+	]
+}
