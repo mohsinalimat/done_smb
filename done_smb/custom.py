@@ -6,7 +6,8 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 from frappe.utils import today
-import datetime
+from datetime import date, datetime
+from frappe.utils import flt
 from dateutil.relativedelta import relativedelta
 
 def calculate_indemnity(employee):
@@ -19,9 +20,9 @@ def calculate_indemnity(employee):
 		return 0
 
 	if not data_of_end:
-		data_of_end = today()
+		data_of_end = datetime.date(datetime.now())
 
-	total_years = relativedelta(datetime.date(data_of_end), datetime.date(data_of_joining)).years
+	total_years = relativedelta(data_of_end, data_of_joining).years
 
 	salary = 0
 	net_pay = frappe.db.sql("select net_pay from `tabSalary Slip` where employee = '"+ employee +"' order by posting_date DESC limit 1 ")
