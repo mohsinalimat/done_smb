@@ -127,4 +127,3 @@ scheduler_events = {
 # override_doctype_dashboards = {
 # 	"Task": "done_smb.task.get_dashboard_data"
 # }
-
