@@ -11,5 +11,15 @@ def getuser(user):
 	emp = frappe.db.get_list("Employee", filters={'user_id':['=',user]}, fields=['name','employee_name'])
 	return emp
 
+@frappe.whitelist()
+def get_name(id):
+	return frappe.db.get_value("Employee", id, 'employee_name')
+
+@frappe.whitelist()
+def find_role(user_mail):
+	print('~~~~~~~~~~~~~~~~~~~~~~~~called~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+	mail = frappe.db.sql("""SELECT DISTINCT a.parent FROM `tabHas Role` as a inner join `tabUser` as b on a.parent = b.name  WHERE role={role} and a.parent != 'Administrator'""".format(role="\'HR Manager\'"), as_list=1)
+	mail_list = [ i[0] for i in mail]
+	return 'HR' if user_mail in mail_list else 'Employee'
 class SalaryCertificate(Document):
 	pass
