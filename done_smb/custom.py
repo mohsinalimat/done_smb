@@ -7,6 +7,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import today
 from datetime import date, datetime
+from frappe.utils import flt
 from dateutil.relativedelta import relativedelta
 
 def calculate_indemnity(employee):
