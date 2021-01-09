@@ -17,7 +17,6 @@ def get_name(id):
 
 @frappe.whitelist()
 def find_role(user_mail):
-	print('~~~~~~~~~~~~~~~~~~~~~~~~called~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 	mail = frappe.db.sql("""SELECT DISTINCT a.parent FROM `tabHas Role` as a inner join `tabUser` as b on a.parent = b.name  WHERE role={role} and a.parent != 'Administrator'""".format(role="\'HR Manager\'"), as_list=1)
 	mail_list = [ i[0] for i in mail]
 	return 'HR' if user_mail in mail_list else 'Employee'
