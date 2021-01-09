@@ -10,32 +10,32 @@ from datetime import date
 import frappe
 
 def leave_allocate_annual():
-		import datetime 
-		import calendar
-		import math
-		from datetime import date, timedelta
-		today = date.today()
-		first_date = today.replace(day = 7)
-		if first_date == today:
-			today_list = (today.strftime("%d-%m-%Y")).split("-")
-			employees =  frappe.db.sql("""select name, employee_name from `tabEmployee` where status = "Active" """,as_dict = 1)
-			for employee in employees:
-				leave_alloc_doc = frappe.new_doc("Leave Allocation")
-				leave_alloc_doc.employee = employee["name"]
-				leave_alloc_doc.employee_name = employee["employee_name"]
-				leave_alloc_doc.leave_type =  'Annual leave'
-				leave_alloc_doc.from_date = today
-				last_date = calendar.monthrange(int(today_list[2]),int(today_list[1]))[1]
-				leave_alloc_doc.to_date = datetime.date(int(today_list[2]), int(today_list[1]), int(last_date))
-				if frappe.db.exists("Leave Allocation",{"employee":employee.name,"leave_type":"Annual Leave"}):
-						leave_alloc_doc.new_leaves_allocated = 2.5
-						leave_alloc_doc.carry_forward = 1
-				else:
-						leave_alloc_doc.new_leaves_allocated = 2.5
-						# joining_date =  frappe.db.sql("select date_of_joining from `tabEmployee` where name =%s",(employee["name"]),as_dict =1)
-						# leave_alloc_doc.new_leaves_allocated = math.floor(((today - joining_date[0]["date_of_joining"]).days)*(2.5/30))
-				leave_alloc_doc.save()
-				leave_alloc_doc.submit()
+	import datetime 
+	import calendar
+	import math
+	from datetime import date, timedelta
+	today = date.today()
+	first_date = today.replace(day = 7)
+	if first_date == today:
+		today_list = (today.strftime("%d-%m-%Y")).split("-")
+		employees =  frappe.db.sql("""select name, employee_name from `tabEmployee` where status = "Active" """,as_dict = 1)
+		for employee in employees:
+			leave_alloc_doc = frappe.new_doc("Leave Allocation")
+			leave_alloc_doc.employee = employee["name"]
+			leave_alloc_doc.employee_name = employee["employee_name"]
+			leave_alloc_doc.leave_type =  'Annual leave'
+			leave_alloc_doc.from_date = today
+			last_date = calendar.monthrange(int(today_list[2]),int(today_list[1]))[1]
+			leave_alloc_doc.to_date = datetime.date(int(today_list[2]), int(today_list[1]), int(last_date))
+			if frappe.db.exists("Leave Allocation",{"employee":employee.name,"leave_type":"Annual Leave"}):
+					leave_alloc_doc.new_leaves_allocated = 2.5
+					leave_alloc_doc.carry_forward = 1
+			else:
+					leave_alloc_doc.new_leaves_allocated = 2.5
+					# joining_date =  frappe.db.sql("select date_of_joining from `tabEmployee` where name =%s",(employee["name"]),as_dict =1)
+					# leave_alloc_doc.new_leaves_allocated = math.floor(((today - joining_date[0]["date_of_joining"]).days)*(2.5/30))
+			leave_alloc_doc.save()
+			leave_alloc_doc.submit()
 
 
 def leave_allocate_sick():
@@ -136,3 +136,25 @@ def annual_leave_form(emp_id, leave_type, from_d, to_d, pos_d):
 		leave["table_unpaid"]["total"] = leave["no_of_days"]
 	
 	return leave
+
+def get_allowence(sal_stuct):
+	sal_detail = frappe.get_doc("Salary Structure", sal_stuct)
+	allow = 0
+	for i in sal_detail.earnings:
+		if i.salary_component != 'Basic':
+			allow = allow + i.amount
+	return allow
+
+def get_sick_leave(employee, start, end):
+	leave = ['Sick Leave Unpaid', '25 Percent unpaid Sick', '75 Percent unpaid Sick', '50 Percent unpaid Sick', 'Sick Leave']
+	leave_days = 0
+	for typ in leave:
+		list = frappe.db.get_list("Leave Application", filters=[
+				['status', '=', 'Approved'],
+				['posting_date', '>=', start],
+				['posting_date', '<', end], 
+				['employee', '=', employee],
+				['leave_type', '=', typ]
+			], fields=["total_leave_days"])
+		leave_days += sum([i.total_leave_days for i in list])
+	return leave_days
