@@ -136,6 +136,8 @@ jenv = {
 		"salary_detail:done_smb.salary_detail",
 		"employee_detail_arabic:done_smb.employee_detail_arabic",
 		"annual_leave_form:done_smb.annual_leave_form",
-		"get_leave:erpnext.hr.doctype.leave_application.leave_application.get_leave_details"
+		"get_leave:erpnext.hr.doctype.leave_application.leave_application.get_leave_details",
+		"get_allow:done_smb.get_allowence",
+		"sick_leave:done_smb.get_sick_leave"
 	]
 }
