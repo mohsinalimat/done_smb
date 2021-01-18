@@ -41,7 +41,6 @@ frappe.ui.form.on('Salary Certificate', {
 			callback:function(res){
 				if (!res.exc){
 					if(res.message == 'Employee'){
-						frappe.msgprint("Permission Denied")
 						frappe.call({
 							method: 'done_smb.done_smb.doctype.salary_certificate.salary_certificate.getuser',
 							args: {
