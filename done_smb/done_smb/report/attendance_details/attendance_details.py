@@ -9,7 +9,7 @@ def execute(filters=None):
 	columns = [
 		{
 			"fieldname": "day",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Day",
 			"width": 0
 		}, 
@@ -21,128 +21,128 @@ def execute(filters=None):
 		},
 		{
 			"fieldname": "time_in",
-			"fieldtype": "time",
+			"fieldtype": "Time",
 			"label": "Time IN",
 			"width": 0,
 		},
 		{
 			"fieldname": "time_out",
-			"fieldtype": "time",
+			"fieldtype": "Time",
 			"label": "Time OUT",
 			"width": 0,
 		}, 
 		{
 			"fieldname": "early_in",
-			"fieldtype": "time",
+			"fieldtype": "Time",
 			"label": "Early IN",
 			"width": 0,
 		},
 		{
 			"fieldname": "ealry_out",
-			"fieldtype": "time",
+			"fieldtype": "Time",
 			"label": "Early OUT",
 			"width": 0,
 		},
 		{
 			"fieldname": "late_in",
-			"fieldtype": "time",
+			"fieldtype": "Time",
 			"label": "Late IN",
 			"width": 0,
 		},
 		{
 			"fieldname": "late_out",
-			"fieldtype": "time",
+			"fieldtype": "Time",
 			"label": "Late OUT",
 			"width": 0,
 		},
 		{
 			"fieldname": "missing_in",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Missing IN",
 			"width": 0,
 		},
 		{
 			"fieldname": "missing_out",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Missing OUT",
 			"width": 0,
 		},
 		{
 			"fieldname": "permissions",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Permissions",
 			"width": 0,
 		},
 		{
 			"fieldname": "official_duties",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Official Duties",
 			"width": 0,
 		},
 		{
 			"fieldname": "attended_hours",
-			"fieldtype": "time",
+			"fieldtype": "Time",
 			"label": "Attended Hours",
 			"width": 0,
 		},
 		{
 			"fieldname": "working_hours",
-			"fieldtype": "time",
+			"fieldtype": "Time",
 			"label": "Working Hours",
 			"width": 0,
 		},
 		{
 			"fieldname": "annual_leave",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Annual Leave",
 			"width": 0,
 		},
 		{
 			"fieldname": "sick_leave",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Sick Leave",
 			"width": 0,
 		},
 		{
 			"fieldname": "other_leave",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Other Leave",
 			"width": 0,
 		},
 		{
 			"fieldname": "official_duty",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Official Duty",
 			"width": 0,
 		},
 		{
 			"fieldname": "training_course",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Training course",
 			"width": 0,
 		},
 		{	
 			"fieldname": "business_trip",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Business Trip",
 			"width": 0,
 		},
 		{
 			"fieldname": "absence",
-			"fieldtype": "data",
+			"fieldtype": "Data",
 			"label": "Absence",
 			"width": 0,
 		},
 		{
 			"fieldname": "avg_attendance",
-			"fieldtype": "percent",
+			"fieldtype": "Percent",
 			"label": "Avg Attendance%",
 			"precision": "2",
 			"width": 0,
 		},
 		{
 			"fieldname": "extra_hour_avg_attendance",
-			"fieldtype": "percent",
+			"fieldtype": "Percent",
 			"label": "Extra Hours Avg Attendance%",
 			"precision": "2",
 			"width": 0,
@@ -197,7 +197,6 @@ def get_leave_dates(leave):
 	return leave_dates
 
 def get_date_range(from_date, to_date):
-	print("get_date_range")
 	days = to_date - from_date
 	dates = []
 	for i in range(days.days + 1):
@@ -222,12 +221,45 @@ def get_data(filters=None):
 
 	other_leave = get_leave(emp_id = filters.employee_id, from_date = filters.from_date, to_date = filters.to_date)
 
+	setting = frappe.get_doc("Attendance Setting")
+	shift_in_time = datetime.strptime(setting.start_time, "%H:%M:%S")
+	shift_out_time = datetime.strptime(setting.end_time, "%H:%M:%S")
+	working_hours =  shift_out_time - shift_in_time
 	for i in dates:
+		attendance = frappe.db.get_list("Attendance", filters=[["employee", "=", filters.employee_id], ["attendance_date", "=", i]], fields=['status', 'in_time', 'out_time']) 
+		if len(attendance)==0:continue
+		in_time = datetime.strptime(attendance[0].in_time, "%H:%M:%S")
+		out_time = datetime.strptime(attendance[0].out_time, "%H:%M:%S")
 		dict = {}
 		dict["day"] = i.strftime("%A")
 		dict["date"] = i.strftime("%d-%m-%Y")
+		dict['time_in'] = in_time.strftime("%H:%M:%S")
+		dict['time_out'] = out_time.strftime("%H:%M:%S")
+		if in_time < shift_in_time:
+			dict['early_in'] = shift_in_time - in_time
+		elif in_time > shift_in_time:
+			dict['late_in'] = in_time - shift_in_time
+		
+		if out_time < shift_out_time:
+			dict['early_out'] = shift_out_time - out_time
+		elif out_time > shift_out_time:
+			dict['late_out'] = out_time - shift_out_time
+
+		dict['missing_in'] = y if not in_time else n
+		dict['missing_out'] = y if not out_time else n
+
+		dict['attended_hours'] = out_time - in_time
+		att_hrs = (out_time - in_time).total_seconds()
+		dict['working_hours'] = working_hours
+		work_hrs = working_hours.total_seconds()
 		dict["annual_leave"] = y if annual_leave and i in annual_leave else n
 		dict["sick_leave"] = y if sick_leave and i in sick_leave else n
 		dict["other_leave"] = y if other_leave and i in other_leave else n
+		dict['absence'] = y if attendance[0].shift=='Absent' else n
+		extra = 0
+		if in_time < shift_in_time or out_time > shift_out_time:
+			dict['extra_hour_avg_attendance'] = timedelta(100 * ( dict['early_in'] + dict['late_out']).total_seconds() / work_hrs)
+			extra = 100 * ( dict['early_in'] + dict['late_out']).total_seconds() / work_hrs
+		dict['avg_attendance'] = timedelta(100 * att_hrs / work_hrs - extra)
 		data.append(dict)
 	return data
