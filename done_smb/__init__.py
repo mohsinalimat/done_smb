@@ -4,6 +4,7 @@ import math
 from erpnext.hr.doctype.leave_application.leave_application import get_holidays
 from erpnext.hr.doctype.leave_application.leave_application import get_leave_details
 from frappe.utils import date_diff
+from datetime import datetime, date
 
 __version__ = '0.0.1'
 from datetime import date
