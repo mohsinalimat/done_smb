@@ -227,6 +227,8 @@ def late_entry():
 		hr_mail = get_hr_mail()
 		send_mail(recipients= hr_mail, subject="Reg Late Entries and early exits", message=content)
 
+		frappe.db.commit()
+
 @frappe.whitelist()
 def get_hr_mail():
 	all_mail = frappe.db.sql("""SELECT DISTINCT a.parent FROM `tabHas Role` as a inner join `tabUser` as b on a.parent = b.name  WHERE role={role} and a.parent != 'Administrator'""".format(role="\'HR Manager\'"), as_list=1)
