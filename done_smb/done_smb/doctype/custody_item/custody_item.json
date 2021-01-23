@@ -7,15 +7,17 @@
   "item",
   "qty",
   "description",
-  "date",
+  "recieved_date",
+  "return_date",
   "returned"
  ],
  "fields": [
   {
    "fieldname": "item",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Item"
+   "label": "Item",
+   "options": "Item"
   },
   {
    "fieldname": "qty",
@@ -26,25 +28,28 @@
   {
    "fieldname": "description",
    "fieldtype": "Text Editor",
-   "in_list_view": 1,
    "label": "Description"
-  },
-  {
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Date"
   },
   {
    "default": "0",
    "fieldname": "returned",
    "fieldtype": "Check",
-   "in_list_view": 1,
    "label": "Returned"
+  },
+  {
+   "fieldname": "recieved_date",
+   "fieldtype": "Date",
+   "label": "Recieved Date"
+  },
+  {
+   "fieldname": "return_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Return Date"
   }
  ],
  "istable": 1,
- "modified": "2021-01-07 12:26:04.360126",
+ "modified": "2021-01-22 14:11:28.300933",
  "modified_by": "Administrator",
  "module": "Done Smb",
  "name": "Custody Item",

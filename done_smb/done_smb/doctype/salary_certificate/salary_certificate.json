@@ -1,5 +1,5 @@
 {
- "autoname": "{employee_id}.##",
+ "autoname": "SAL-.{employee_id}.###",
  "creation": "2021-01-04 12:34:27.316785",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -60,7 +60,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2021-01-09 09:43:32.484738",
+ "modified": "2021-01-13 10:43:49.046144",
  "modified_by": "Administrator",
  "module": "Done Smb",
  "name": "Salary Certificate",

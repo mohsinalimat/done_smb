@@ -1,0 +1,54 @@
+{
+ "autoname": "format:{employee_name}-{MM}-{DD}",
+ "creation": "2021-01-07 16:31:38.389267",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_name",
+  "section_break_2",
+  "custody_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "custody_item",
+   "fieldtype": "Table",
+   "label": "Custody Item",
+   "options": "Custody Item"
+  }
+ ],
+ "modified": "2021-01-07 16:35:49.726317",
+ "modified_by": "Administrator",
+ "module": "Done Smb",
+ "name": "Custody",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
