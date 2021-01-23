@@ -5,6 +5,8 @@ from erpnext.hr.doctype.leave_application.leave_application import get_holidays
 from erpnext.hr.doctype.leave_application.leave_application import get_leave_details
 from frappe.utils import date_diff
 from datetime import datetime, date
+from frappe.email import queue
+# from erpnext.hr.doctype.leave_application.leave_application import LeaveApplication
 
 __version__ = '0.0.1'
 from datetime import date
@@ -168,8 +170,14 @@ def get_sick_leave(employee, start, end):
 			], fields=["total_leave_days"])
 		leave_days += sum([i.total_leave_days for i in list])
 	return leave_days
+
 def send_mail(recipients, subject, message):
-	frappe.sendmail(recipients = recipients, subject = subject, message = message)
+	frappe.sendmail(
+				recipients = recipients,
+				subject = subject,
+				message = message
+			)
+	# frappe.sendmail(recipients = recipients, subject = subject, message = message)
 
 def late_entry():
 	late_entry = []
