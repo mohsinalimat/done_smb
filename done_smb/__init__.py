@@ -4,6 +4,7 @@ import math
 from erpnext.hr.doctype.leave_application.leave_application import get_holidays
 from erpnext.hr.doctype.leave_application.leave_application import get_leave_details
 from frappe.utils import date_diff
+from datetime import datetime, date
 
 __version__ = '0.0.1'
 from datetime import date
@@ -167,3 +168,58 @@ def get_sick_leave(employee, start, end):
 			], fields=["total_leave_days"])
 		leave_days += sum([i.total_leave_days for i in list])
 	return leave_days
+def send_mail(recipients, subject, message):
+	frappe.sendmail(recipients = recipients, subject = subject, message = message)
+
+def late_entry():
+	late_entry = []
+	early_out = []
+	today = date.today()
+	shift = frappe.get_doc("Attendance Setting")
+	shift_in_time = datetime.strptime(shift.start_time, "%H:%M:%S")
+	shift_out_time = datetime.strptime(shift.end_time, "%H:%M:%S")
+	
+	attendance = frappe.db.get_list("Attendance", {"attendance_date":today}, ["employee", "employee_name", "in_time", "out_time"])
+	for emp in attendance:
+		in_time = datetime.strptime(attendance[0].in_time, "%H:%M:%S")
+		out_time = datetime.strptime(attendance[0].out_time, "%H:%M:%S")
+		mail = frappe.db.get_value("Employee", emp.employee, "user_id")
+		if in_time > shift_in_time:
+			dic = {}
+			dic["employee"] = emp.employee
+			dic["employee_name"] = emp.employee_name
+			dic["late_time"] = in_time - shift_in_time
+			late_entry.append(dic)
+			if mail:
+				send_mail(recipients=mail, subject= "Reg Late Entry", message=f"{emp.employee} {emp.employee_name} came {emp.late_time} hr late Today")			
+
+		if out_time < shift_out_time:
+			dic = {}
+			dic['employee'] = emp.employee
+			dic["employee_name"] = emp.employee_name
+			dic["early_out"] = shift_out_time - out_time
+			early_out.append(dic)
+			if mail:
+				send_mail(recipients=mail, subject= "Reg Early Exit", message=f"{emp.employee} {emp.employee_name} gone {emp.late_time} hr early Today")
+
+	if len(late_entry)!=0 or len(early_out)!=0:
+		late = ''
+		for  i in late_entry:
+			late += f"<tr><td>{i['employee']}</td><td>{i['employee_name']}</td><td>{i['late_time']}</td></tr>"
+		early = ''
+		for  i in early_out:
+			early += f"<tr><td>{i['employee']}</td><td>{i['employee_name']}</td><td>{i['early_out']}</td></tr>"
+	
+		late_tbl = f'<table><tr><td style="width:30%">Employee Id</td><td style="width:40%">Employee Name</td><td style="width:30%">Late Entry Time</td></tr>{late}</table>'
+		early_tbl = f'<table><tr><td style="width:30%">Employee Id</td><td style="width:40%">Employee Name</td><td style="width:30%">Early Exit Time</td></tr>{early}</table>'
+		content = f'<table><tr><td style="width:50%">Late Entry</td><td style="width:50%">Early Exit</td></tr><tr"><td>{late_tbl}</td><td>{early_tbl}</td></table>'
+
+
+		#all_mail = frappe.db.sql("""SELECT DISTINCT a.parent FROM `tabHas Role` as a inner join `tabUser` as b on a.parent = b.name  WHERE role={role} and a.parent != 'Administrator'""".format(role="\'HR Manager\'"), as_list=1)
+		hr_mail = get_hr_mail()
+		send_mail(recipients= hr_mail, subject="Reg Late Entries and early exits", message=content)
+
+@frappe.whitelist()
+def get_hr_mail():
+	all_mail = frappe.db.sql("""SELECT DISTINCT a.parent FROM `tabHas Role` as a inner join `tabUser` as b on a.parent = b.name  WHERE role={role} and a.parent != 'Administrator'""".format(role="\'HR Manager\'"), as_list=1)
+	return [ i[0] for i in mail]
