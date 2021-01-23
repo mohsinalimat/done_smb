@@ -222,4 +222,4 @@ def late_entry():
 @frappe.whitelist()
 def get_hr_mail():
 	all_mail = frappe.db.sql("""SELECT DISTINCT a.parent FROM `tabHas Role` as a inner join `tabUser` as b on a.parent = b.name  WHERE role={role} and a.parent != 'Administrator'""".format(role="\'HR Manager\'"), as_list=1)
-	return [ i[0] for i in mail]
+	return [ i[0] for i in all_mail]
