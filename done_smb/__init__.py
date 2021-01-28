@@ -5,8 +5,6 @@ from erpnext.hr.doctype.leave_application.leave_application import get_holidays
 from erpnext.hr.doctype.leave_application.leave_application import get_leave_details
 from frappe.utils import date_diff
 from datetime import datetime, date
-from frappe.email import queue
-# from erpnext.hr.doctype.leave_application.leave_application import LeaveApplication
 
 __version__ = '0.0.1'
 from datetime import date
@@ -107,13 +105,13 @@ def annual_leave_form(emp_id, leave_type, from_d, to_d, pos_d):
 	else:
 		paid_leaves = leave["no_of_days"]
 		if leave_type == "25 Percent unpaid Sick":
-			paid_salary = (salary_detail(emp_id)["amount"] / 30) * leave["no_of_days"] * 0.25
+			paid_salary = (salary_detail(emp_id)["amount"] / 26) * leave["no_of_days"] * 0.25
 		elif leave_type == "50 Percent unpaid Sick":
-			paid_salary = (salary_detail(emp_id)["amount"] / 30) * leave["no_of_days"] * 0.50
+			paid_salary = (salary_detail(emp_id)["amount"] / 26) * leave["no_of_days"] * 0.50
 		elif leave_type == "75 Percent unpaid Sick":
-			paid_salary = (salary_detail(emp_id)["amount"] / 30) * leave["no_of_days"] * 0.75
+			paid_salary = (salary_detail(emp_id)["amount"] / 26) * leave["no_of_days"] * 0.75
 		else:
-			paid_salary = (salary_detail(emp_id)["amount"] / 30) * leave["no_of_days"]
+			paid_salary = (salary_detail(emp_id)["amount"] / 26) * leave["no_of_days"]
 	leave["paid_leaves"] = paid_leaves
 	leave["unpaid_leaves"] = unpaid_leaves
 	leave["paid_salary"] = math.ceil(paid_salary)
@@ -223,7 +221,6 @@ def late_entry():
 		content = f'<table><tr><td style="width:50%">Late Entry</td><td style="width:50%">Early Exit</td></tr><tr"><td>{late_tbl}</td><td>{early_tbl}</td></table>'
 
 
-		#all_mail = frappe.db.sql("""SELECT DISTINCT a.parent FROM `tabHas Role` as a inner join `tabUser` as b on a.parent = b.name  WHERE role={role} and a.parent != 'Administrator'""".format(role="\'HR Manager\'"), as_list=1)
 		hr_mail = get_hr_mail()
 		send_mail(recipients= hr_mail, subject="Reg Late Entries and early exits", message=content)
 
