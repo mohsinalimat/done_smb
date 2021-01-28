@@ -227,39 +227,66 @@ def get_data(filters=None):
 	working_hours =  shift_out_time - shift_in_time
 	for i in dates:
 		attendance = frappe.db.get_list("Attendance", filters=[["employee", "=", filters.employee_id], ["attendance_date", "=", i]], fields=['status', 'in_time', 'out_time']) 
-		if len(attendance)==0:continue
-		in_time = datetime.strptime(attendance[0].in_time, "%H:%M:%S")
-		out_time = datetime.strptime(attendance[0].out_time, "%H:%M:%S")
 		dict = {}
 		dict["day"] = i.strftime("%A")
 		dict["date"] = i.strftime("%d-%m-%Y")
-		dict['time_in'] = in_time.strftime("%H:%M:%S")
-		dict['time_out'] = out_time.strftime("%H:%M:%S")
-		if in_time < shift_in_time:
-			dict['early_in'] = shift_in_time - in_time
-		elif in_time > shift_in_time:
-			dict['late_in'] = in_time - shift_in_time
-		
-		if out_time < shift_out_time:
-			dict['early_out'] = shift_out_time - out_time
-		elif out_time > shift_out_time:
-			dict['late_out'] = out_time - shift_out_time
+		if attendance and attendance[0]['status']== 'Present':
+			in_time = datetime.strptime(attendance[0].in_time, "%H:%M:%S")
+			out_time = datetime.strptime(attendance[0].out_time, "%H:%M:%S")
+			dict['time_in'] = in_time.strftime("%H:%M:%S")
+			dict['time_out'] = out_time.strftime("%H:%M:%S")
+			if in_time < shift_in_time:
+				dict['early_in'] = shift_in_time - in_time
+			elif in_time > shift_in_time:
+				dict['late_in'] = in_time - shift_in_time
+			
+			if out_time < shift_out_time:
+				dict['early_out'] = shift_out_time - out_time
+			elif out_time > shift_out_time:
+				dict['late_out'] = out_time - shift_out_time
 
-		dict['missing_in'] = y if not in_time else n
-		dict['missing_out'] = y if not out_time else n
+			dict['missing_in'] = y if not in_time else n
+			dict['missing_out'] = y if not out_time else n
 
-		dict['attended_hours'] = out_time - in_time
-		att_hrs = (out_time - in_time).total_seconds()
-		dict['working_hours'] = working_hours
-		work_hrs = working_hours.total_seconds()
-		dict["annual_leave"] = y if annual_leave and i in annual_leave else n
-		dict["sick_leave"] = y if sick_leave and i in sick_leave else n
-		dict["other_leave"] = y if other_leave and i in other_leave else n
-		dict['absence'] = y if attendance[0].shift=='Absent' else n
-		extra = 0
-		if in_time < shift_in_time or out_time > shift_out_time:
-			dict['extra_hour_avg_attendance'] = timedelta(100 * ( dict['early_in'] + dict['late_out']).total_seconds() / work_hrs)
-			extra = 100 * ( dict['early_in'] + dict['late_out']).total_seconds() / work_hrs
-		dict['avg_attendance'] = timedelta(100 * att_hrs / work_hrs - extra)
+			dict['attended_hours'] = out_time - in_time
+			att_hrs = (out_time - in_time).total_seconds()
+			dict['working_hours'] = working_hours
+			work_hrs = working_hours.total_seconds()
+			extra = 0
+			if in_time < shift_in_time or out_time > shift_out_time:
+				dict['extra_hour_avg_attendance'] = timedelta(100 * ( dict['early_in'] + dict['late_out']).total_seconds() / work_hrs)
+				extra = 100 * ( dict['early_in'] + dict['late_out']).total_seconds() / work_hrs
+			dict['avg_attendance'] = timedelta(100 * att_hrs / work_hrs - extra)
+		else:
+			dict['time_in'] = n
+			dict['time_out'] = n
+			dict['early_in'] = n
+			dict['early_out'] = n
+			dict['late_in'] = n
+			dict['late_out'] = n
+			dict['missing_in'] = n
+			dict['missing_out'] = n
+			dict['attended_hours'] = n
+			dict['working_hours'] = n
+			if annual_leave and i in annual_leave:
+				dict["annual_leave"] = y
+				dict["sick_leave"] = n
+				dict["other_leave"] = n
+				dict['absence'] = n
+			elif sick_leave and i in sick_leave:
+				dict["sick_leave"] = y
+				dict["annual_leave"] = n
+				dict["other_leave"] = n
+				dict['absence'] = n
+			elif other_leave and i in other_leave:
+				dict["other_leave"] = y
+				dict["annual_leave"] = n
+				dict["sick_leave"] = n
+				dict['absence'] = n
+			else:
+				dict["annual_leave"] = n
+				dict["sick_leave"] = n
+				dict["other_leave"] = n
+				dict['absence'] = y
 		data.append(dict)
 	return data
