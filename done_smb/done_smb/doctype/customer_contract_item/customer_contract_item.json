@@ -10,6 +10,7 @@
   "final_item",
   "item",
   "item_name",
+  "qty",
   "rate"
  ],
  "fields": [
@@ -48,12 +49,14 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Item",
-   "options": "Item"
+   "options": "Item",
+   "reqd": 1
   },
   {
    "fetch_from": "item.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Item Name"
   },
   {
@@ -62,10 +65,17 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Price"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Qty",
+   "reqd": 1
   }
  ],
  "istable": 1,
- "modified": "2021-01-29 09:02:04.175183",
+ "modified": "2021-01-29 09:51:59.987568",
  "modified_by": "Administrator",
  "module": "Done Smb",
  "name": "Customer Contract Item",

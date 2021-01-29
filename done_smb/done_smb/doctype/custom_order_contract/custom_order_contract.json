@@ -66,15 +66,13 @@
   {
    "fieldname": "summary",
    "fieldtype": "Small Text",
-   "label": "Order Description",
-   "reqd": 1
+   "label": "Order Description"
   },
   {
    "fieldname": "remarks",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Notes",
-   "reqd": 1
+   "label": "Notes"
   },
   {
    "fieldname": "amended_from",
@@ -87,7 +85,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2021-01-29 09:01:49.773232",
+ "modified": "2021-01-29 09:48:31.049553",
  "modified_by": "Administrator",
  "module": "Done Smb",
  "name": "Custom Order Contract",
