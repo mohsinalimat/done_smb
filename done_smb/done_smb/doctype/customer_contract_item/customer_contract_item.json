@@ -1,0 +1,78 @@
+{
+ "creation": "2020-08-22 23:28:02.044995",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "is_existing_item",
+  "template",
+  "existing_item",
+  "final_item",
+  "item",
+  "item_name",
+  "rate"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "is_existing_item",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Existing Item"
+  },
+  {
+   "depends_on": "eval:doc.is_existing_item ==0",
+   "fieldname": "template",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Template",
+   "options": "Item"
+  },
+  {
+   "depends_on": "eval:doc.is_existing_item ==1",
+   "fieldname": "existing_item",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Existing Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "final_item",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Final Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "item.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
+  },
+  {
+   "fetch_from": "item.standard_rate",
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Price"
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-01-29 09:02:04.175183",
+ "modified_by": "Administrator",
+ "module": "Done Smb",
+ "name": "Customer Contract Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
