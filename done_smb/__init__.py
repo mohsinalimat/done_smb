@@ -237,5 +237,5 @@ def set_value_contract(doc , action):
 		return 
 	cus_record = frappe.db.sql("select customer_name ,mobile_no, email_id , customer_primary_address from `tabCustomer` where name = %s",(doc.party_name),as_dict = 1)
 	print(cus_record)
-	doc.contract_terms = (doc.contract_terms).format(cus_record[0]['customer_name'], doc.civil_id, "Country", doc.mobile_no , cus_record[0]['email_id'], "Civic Id country issuer", cus_record[0]['address_html'])
+	doc.contract_terms = (doc.contract_terms).format(cus_record[0]['customer_name'], doc.civil_id, "Country", doc.mobile_no , cus_record[0]['email_id'], "Civic Id country issuer", cus_record[0]['customer_primary_address'])
 	# doc.save()
