@@ -21,7 +21,8 @@
   "delivery_date",
   "summary",
   "remarks",
-  "amended_from"
+  "amended_from",
+  "status"
  ],
  "fields": [
   {
@@ -122,7 +123,6 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2021-01-29 13:38:51.183791",
  "modified_by": "Administrator",
  "module": "Done Smb",
  "name": "Custom Order Contract",
