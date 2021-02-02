@@ -5,6 +5,26 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
+from json import loads
+
+@frappe.whitelist()
+def get_status(name, items, is_report):
+	is_report = int(is_report)
+	status = {}
+	sales_name = frappe.db.get_value("Sales Order", {'coc': name}, ['name'])
+	items = loads(items)
+	for i in items:
+		work = frappe.db.get_value("Work Order", {"production_item": i, "sales_order": sales_name}, ["status"])
+		status[i] = work
+	print(not is_report)
+	if not is_report:
+		body = f''
+		for i in items:
+			body += f'<tr><td style="border: 1px solid black;width:50%">{i}</td><td style="border: 1px solid black;width:50%">{status[i]}</td></tr>'
+		table = f'<table width=100%><tr><td style="border: 1px solid black;width:50%;text-align:center"><strong>Items</strong></td><td style="border: 1px solid black;width:50%;text-align:center"><strong>Status</strong></td></tr>{body}</table>'
+		print(table)	
+		return table
+	return status
 
 class CustomOrderContract(Document):
 	def on_submit(self):
@@ -32,5 +52,6 @@ class CustomOrderContract(Document):
 			wo.save()
 			wo.submit()
 
-		
+	def validate(self):
+		self.db_set("status", self.status)	
 

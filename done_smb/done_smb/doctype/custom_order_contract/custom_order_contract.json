@@ -15,7 +15,8 @@
   "delivery_date",
   "summary",
   "remarks",
-  "amended_from"
+  "amended_from",
+  "status"
  ],
  "fields": [
   {
@@ -82,10 +83,20 @@
    "options": "Custom Order Contract",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "no_copy": 1,
+   "options": "\nDraft\nNot Saved\nSaved\nSubmitted\nNot Started\nIn Process\nCompleted\nStopped\nCancelled",
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2021-01-29 09:48:31.049553",
+ "modified": "2021-02-01 15:48:08.337830",
  "modified_by": "Administrator",
  "module": "Done Smb",
  "name": "Custom Order Contract",
