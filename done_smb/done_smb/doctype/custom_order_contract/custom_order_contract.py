@@ -54,6 +54,3 @@ class CustomOrderContract(Document):
 			wo.save()
 			wo.submit()
 
-	def validate(self):
-		self.db_set("status", self.status)	
-
