@@ -17,6 +17,7 @@ class CustomOrderContract(Document):
 			row.item_name = self.item[i].item_name
 			row.qty = self.item[i].qty
 		so.save()
+		sales_no = so.name
 		so.submit()
 		for i in range(len(self.item)):
 			wo = frappe.new_doc("Work Order")
@@ -25,6 +26,7 @@ class CustomOrderContract(Document):
 			wo.bom_no = frappe.db.get_value("BOM",{"item":  self.item[i].item,"is_default":1},['name'])
 			wo.wip_warehouse = "All Warehouses - DI"
 			wo.fg_warehouse = "All Warehouses - DI"
+			wo.sales_order = sales_no
 			wo.save()
 			for ware in wo.required_items:
 				# row = so.append("Work Order Item",{})

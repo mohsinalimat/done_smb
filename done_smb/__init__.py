@@ -230,3 +230,12 @@ def late_entry():
 def get_hr_mail():
 	all_mail = frappe.db.sql("""SELECT DISTINCT a.parent FROM `tabHas Role` as a inner join `tabUser` as b on a.parent = b.name  WHERE role={role} and a.parent != 'Administrator'""".format(role="\'HR Manager\'"), as_list=1)
 	return [ i[0] for i in all_mail]
+
+
+def set_value_contract(doc , action):
+	if not action == 'validate':
+		return 
+	cus_record = frappe.db.sql("select customer_name ,mobile_no, email_id from `tabCustomer` where name = %s",(doc.party_name),as_dict = 1)
+	print(cus_record)
+	doc.contract_terms = (doc.contract_terms).format(cus_record[0]['customer_name'], doc.civil_id, "Country", doc.mobile_no , cus_record[0]['email_id'], "Civic Id country issuer")
+	# doc.save()
