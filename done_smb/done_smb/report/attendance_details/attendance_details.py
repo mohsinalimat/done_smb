@@ -38,7 +38,7 @@ def execute(filters=None):
 			"width": 0,
 		},
 		{
-			"fieldname": "ealry_out",
+			"fieldname": "early_out",
 			"fieldtype": "Time",
 			"label": "Early OUT",
 			"width": 0,
@@ -235,13 +235,18 @@ def get_data(filters=None):
 			out_time = datetime.strptime(attendance[0].out_time, "%H:%M:%S")
 			dict['time_in'] = in_time.strftime("%H:%M:%S")
 			dict['time_out'] = out_time.strftime("%H:%M:%S")
+			print("haaaaaai")
+			print(shift_out_time, out_time, out_time < shift_out_time, shift_out_time - out_time)
 			if in_time < shift_in_time:
+				print(shift_in_time - in_time)
 				dict['early_in'] = shift_in_time - in_time
 			elif in_time > shift_in_time:
 				dict['late_in'] = in_time - shift_in_time
 			
 			if out_time < shift_out_time:
+				print("inned")
 				dict['early_out'] = shift_out_time - out_time
+				print
 			elif out_time > shift_out_time:
 				dict['late_out'] = out_time - shift_out_time
 
