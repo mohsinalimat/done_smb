@@ -82,6 +82,10 @@ app_license = "MIT"
 doc_events = {
 	"Contract": {
 		"validate": "done_smb.set_value_contract",
+	},
+	"Sales Invoice" :{
+		"validate": "done_smb.set_warehouse_sales_invoice",
+
 	}
 }
 
