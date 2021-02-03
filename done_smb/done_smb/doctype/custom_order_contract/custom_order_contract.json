@@ -21,8 +21,7 @@
   "delivery_date",
   "summary",
   "remarks",
-  "amended_from",
-  "status"
+  "amended_from"
  ],
  "fields": [
   {
@@ -99,13 +98,15 @@
    "fieldname": "work_in_progress_warehouse",
    "fieldtype": "Link",
    "label": "Work in Progress Warehouse",
-   "options": "Warehouse"
+   "options": "Warehouse",
+   "reqd": 1
   },
   {
    "fieldname": "source_warehouse",
    "fieldtype": "Link",
    "label": "Source Warehouse",
-   "options": "Warehouse"
+   "options": "Warehouse",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_9",
@@ -115,7 +116,8 @@
    "fieldname": "target_warehouse",
    "fieldtype": "Link",
    "label": "Target Warehouse",
-   "options": "Warehouse"
+   "options": "Warehouse",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_11",
@@ -123,6 +125,7 @@
   }
  ],
  "is_submittable": 1,
+ "modified": "2021-02-02 16:13:02.342690",
  "modified_by": "Administrator",
  "module": "Done Smb",
  "name": "Custom Order Contract",
