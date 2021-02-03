@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 import math
 from erpnext.hr.doctype.leave_application.leave_application import get_holidays
 from erpnext.hr.doctype.leave_application.leave_application import get_leave_details
+from frappe.utils import nowdate, cstr, flt, cint, now, getdate
+
 from frappe.utils import date_diff
 from datetime import datetime, date
 
@@ -239,3 +241,58 @@ def set_value_contract(doc , action):
 	print(cus_record)
 	doc.contract_terms = (doc.contract_terms).format(cus_record[0]['customer_name'], doc.civil_id, "Country", doc.mobile_no , cus_record[0]['email_id'], "Civic Id country issuer", cus_record[0]['customer_primary_address'])
 	# doc.save()
+
+
+
+def get_stock_warehouse(warehouse=None, posting_date=None, item_code=None):
+	if not posting_date: posting_date = nowdate()
+
+	values, condition = [posting_date], ""
+
+	if warehouse:
+
+		lft, rgt, is_group = frappe.db.get_value("Warehouse", warehouse, ["lft", "rgt", "is_group"])
+
+		if is_group:
+			values.extend([lft, rgt])
+			condition += "and exists (\
+				select name from `tabWarehouse` wh where wh.name = sle.warehouse\
+				and wh.lft >= %s and wh.rgt <= %s)"
+
+		else:
+			values.append(warehouse)
+			condition += " AND warehouse = %s"
+
+	if item_code:
+		values.append(item_code)
+		condition += " AND item_code = %s"
+
+	stock_ledger_entries = frappe.db.sql("""
+		SELECT item_code, stock_value, name, warehouse
+		FROM `tabStock Ledger Entry` sle
+		WHERE posting_date <= %s {0}
+		ORDER BY timestamp(posting_date, posting_time) DESC, creation DESC
+	""".format(condition), values, as_dict=1)
+
+	sle_map = {}
+	for sle in stock_ledger_entries:
+		if not (sle.item_code, sle.warehouse) in sle_map:
+			sle_map[sle.warehouse] = flt(sle.stock_value)
+
+	return sle_map
+
+
+
+def set_warehouse_sales_invoice(doc):
+	total_warehouse = []
+	for item  in doc.items:
+		warehouse = get_stock_warehouse(item.item_code)
+		total_warehouse.append(warehouse)
+	i = 0
+	for ware in total_warehouse:
+		for key, value in ware:
+			doc.stock_table[i].warehouse = key 
+			doc.stock_table[i].stock_qty = value
+			i += 1
+	# doc.save()
+	
