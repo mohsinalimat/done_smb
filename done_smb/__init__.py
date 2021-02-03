@@ -283,7 +283,9 @@ def get_stock_warehouse(warehouse=None, posting_date=None, item_code=None):
 
 
 
-def set_warehouse_sales_invoice(doc):
+def set_warehouse_sales_invoice(doc,action):
+	if not action == 'validate':
+		return
 	total_warehouse = []
 	for item  in doc.items:
 		warehouse = get_stock_warehouse(item_code = item.item_code)
