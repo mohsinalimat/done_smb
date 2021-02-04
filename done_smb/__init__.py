@@ -238,7 +238,6 @@ def set_value_contract(doc , action):
 	if not action == 'validate':
 		return 
 	cus_record = frappe.db.sql("select customer_name ,mobile_no, email_id , customer_primary_address from `tabCustomer` where name = %s",(doc.party_name),as_dict = 1)
-	print(cus_record)
 	doc.contract_terms = (doc.contract_terms).format(cus_record[0]['customer_name'], doc.civil_id, "Country", doc.mobile_no , cus_record[0]['email_id'], "Civic Id country issuer", cus_record[0]['customer_primary_address'])
 	# doc.save()
 
@@ -287,25 +286,13 @@ def set_warehouse_sales_invoice(doc,action):
 	if not action == 'validate':
 		return
 	total_warehouse = []
-	print("----")
 	for item  in doc.items:
 		warehouse = get_stock_warehouse(item_code = item.item_code)
 		total_warehouse.append(warehouse)
-	i = 0
-	print(total_warehouse)
 	for ware in total_warehouse:
-		print(ware)
 		for key in ware:
-			# print(key)
-			# print(key, value)
-			row = doc.append("Stock Table",{})
-			# print("fdas")
-			# print(row.warehouse)
-			# print(doc.stock_table)
+			row = doc.append("stock_table",{})
 			row.warehouse = key
 			row.stock_qty = ware[key]
-			# print(row.warehouse)
 
-			i = i + 1
-	# doc.save()
 	
