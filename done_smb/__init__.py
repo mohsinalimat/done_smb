@@ -287,14 +287,25 @@ def set_warehouse_sales_invoice(doc,action):
 	if not action == 'validate':
 		return
 	total_warehouse = []
+	print("----")
 	for item  in doc.items:
 		warehouse = get_stock_warehouse(item_code = item.item_code)
 		total_warehouse.append(warehouse)
 	i = 0
+	print(total_warehouse)
 	for ware in total_warehouse:
-		for key, value in ware:
-			doc.stock_table[i].warehouse = key 
-			doc.stock_table[i].stock_qty = value
-			i += 1
+		print(ware)
+		for key in ware:
+			# print(key)
+			# print(key, value)
+			row = doc.append("Stock Table",{})
+			# print("fdas")
+			# print(row.warehouse)
+			# print(doc.stock_table)
+			row.warehouse = key
+			row.stock_qty = ware[key]
+			# print(row.warehouse)
+
+			i = i + 1
 	# doc.save()
 	
