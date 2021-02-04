@@ -43,15 +43,26 @@ class CustomOrderContract(Document):
 			wo = frappe.new_doc("Work Order")
 			wo.production_item = self.item[i].item
 			wo.qty = int(self.item[i].qty)
-			# if frappe.db.exists("BOM",{"item":  self.item[i].item,"is_default":1},['name']):
-			wo.bom_no = frappe.db.get_value("BOM",{"item":  self.item[i].item, "docstatus":1},['name'])
+			if frappe.db.exists("BOM",{"item":  self.item[i].item,"docstatus":1,"is_default":1},['name']):
+				wo.bom_no = frappe.db.get_value("BOM",{"item":  self.item[i].item,"docstatus":1,"is_default":1},['name'])
+			else:
+				frappe.throw(f"{self.item[i].item} item has no Default BOM")
 			wo.wip_warehouse = "All Warehouses - DI"
 			wo.fg_warehouse = "All Warehouses - DI"
 			wo.sales_order = sales_no
 			wo.save()
 			for ware in wo.required_items:
-				# row = so.append("Work Order Item",{})
 				ware.source_warehouse = "All Warehouses - DI"
 			wo.save()
 			wo.submit()
+		si = frappe.new_doc("Sales Invoice")
+		si.customer = self.customer
+		for i in self.item:
+			row = si.append("items",{})
+			row.item_code = i.item	
+			row.qty = i.qty
+			row.sales_order = sales_no
+		si.save()
+		si.submit()
+
 
