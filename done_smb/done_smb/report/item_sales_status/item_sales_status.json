@@ -1,6 +1,6 @@
 {
  "add_total_row": 0,
- "creation": "2021-02-02 16:32:35.446062",
+ "creation": "2021-02-03 10:56:15.249600",
  "disable_prepared_report": 0,
  "disabled": 0,
  "docstatus": 0,
@@ -8,14 +8,14 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "Default",
- "modified": "2021-02-02 16:32:35.446062",
+ "modified": "2021-02-03 10:56:15.249600",
  "modified_by": "Administrator",
  "module": "Done Smb",
- "name": "Moving Item Status",
+ "name": "Item Sales Status",
  "owner": "Administrator",
  "prepared_report": 0,
  "ref_doctype": "Sales Invoice",
- "report_name": "Moving Item Status",
+ "report_name": "Item Sales Status",
  "report_type": "Script Report",
  "roles": [
   {

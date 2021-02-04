@@ -2,7 +2,7 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["Moving Item Status"] = {
+frappe.query_reports["Item Sales Status"] = {
 	"filters": [
 		{
 			"fieldname": "from_date",
