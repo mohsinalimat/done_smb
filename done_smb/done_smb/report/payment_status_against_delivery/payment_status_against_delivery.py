@@ -25,11 +25,6 @@ def get_columns(filters):
 		"fieldtype": "Data",
 	},
 	{
-		"fieldname":"work_order",
-		"label": "Work Order",
-		"fieldtype": "Data",
-	},
-	{
 		"fieldname":"status",
 		"label": "Work Order Status",
 		"fieldtype": "Data",
@@ -61,22 +56,29 @@ def get_columns(filters):
 
 def get_data(filters):
 	data = frappe.db.sql(""" 
-	select so.name,
-       coc.name,
-       wo.name,
-       wo.status,
-       count(wo.status),
-       si.grand_total,
-       si.status,
-       si.outstanding_amount
-	from `tabSales Order` as so
-			left outer join `tabCustom Order Contract` as coc on coc.name = so.coc and coc.docstatus = 1
-			left outer join `tabWork Order` as wo on wo.sales_order = so.name and wo.docstatus = 1
-			inner join `tabSales Invoice Item` as soi on soi.sales_order = so.name
-			inner join `tabSales Invoice` as si on si.name = soi.parent and si.docstatus = 1
-	where so.delivery_date >= %s
-	and so.delivery_date < %s
-	and so.docstatus = 1
-	group by so.name, coc.name, wo.name, wo.status
+	select result.so,
+       result.coc,
+       result.status,
+       count(result.status),
+       result.grand_total,
+       result.si,
+       result.outstanding_amount
+from (select so.name   as so,
+             coc.name  as coc,
+             wo.name   as wo,
+             wo.status,
+             si.status as si,
+             si.grand_total,
+             si.outstanding_amount
+      from `tabSales Order` as so
+               left outer join `tabCustom Order Contract` as coc on coc.name = so.coc and coc.docstatus = 1
+               left outer join `tabWork Order` as wo on wo.sales_order = so.name and wo.docstatus = 1
+               inner join `tabSales Invoice Item` as soi on soi.sales_order = so.name
+               inner join `tabSales Invoice` as si on si.name = soi.parent and soi.docstatus = 1
+		where so.delivery_date >= %s
+		and so.delivery_date < %s
+		and so.docstatus = 1
+      group by so.name, wo, wo.status) as result
+group by result.coc, result.so, result.status
 	""",(filters.from_date,filters.to_date),as_list = 1)
 	return data
