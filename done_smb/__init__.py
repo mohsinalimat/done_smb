@@ -296,4 +296,13 @@ def set_warehouse_sales_invoice(doc,action):
 			row.warehouse = key[0]
 			row.stock_qty = ware[key]
 
-	
+def throw_msg():
+	frappe.throw("Employee does not have a Salary Slip")
+
+def salary_sum(employee):
+	sum = frappe.db.sql(f"select sum(net_pay) from `tabSalary Slip` where employee = \'{employee}\' and docstatus = 1", as_list = 1)[0][0]
+	return sum if sum else 'NA'
+
+def unpaid_days_sum(employee):
+	sum = frappe.db.sql(f"select sum(leave_without_pay) from `tabSalary Slip` where employee = \'{employee}\' and docstatus = 1", as_list = 1)[0][0]
+	return sum if sum else 'NA'
