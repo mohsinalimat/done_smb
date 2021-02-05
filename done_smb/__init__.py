@@ -238,7 +238,6 @@ def set_value_contract(doc , action):
 	if not action == 'validate':
 		return 
 	cus_record = frappe.db.sql("select customer_name ,mobile_no, email_id , customer_primary_address from `tabCustomer` where name = %s",(doc.party_name),as_dict = 1)
-	print(cus_record)
 	doc.contract_terms = (doc.contract_terms).format(cus_record[0]['customer_name'], doc.civil_id, "Country", doc.mobile_no , cus_record[0]['email_id'], "Civic Id country issuer", cus_record[0]['customer_primary_address'])
 	# doc.save()
 
@@ -268,16 +267,16 @@ def get_stock_warehouse(warehouse=None, posting_date=None, item_code=None):
 		condition += " AND item_code = %s"
 
 	stock_ledger_entries = frappe.db.sql("""
-		SELECT item_code, stock_value, name, warehouse
+		SELECT item_code, stock_value, name, warehouse,qty_after_transaction
 		FROM `tabStock Ledger Entry` sle
 		WHERE posting_date <= %s {0}
-		ORDER BY timestamp(posting_date, posting_time) DESC, creation DESC
+		ORDER BY timestamp(posting_date, posting_time) ASC, creation ASC
 	""".format(condition), values, as_dict=1)
 
 	sle_map = {}
 	for sle in stock_ledger_entries:
 		if not (sle.item_code, sle.warehouse) in sle_map:
-			sle_map[sle.warehouse] = flt(sle.stock_value)
+			sle_map[sle.warehouse,sle.item_code] = flt(sle.qty_after_transaction)
 
 	return sle_map
 
@@ -290,11 +289,11 @@ def set_warehouse_sales_invoice(doc,action):
 	for item  in doc.items:
 		warehouse = get_stock_warehouse(item_code = item.item_code)
 		total_warehouse.append(warehouse)
-	i = 0
 	for ware in total_warehouse:
-		for key, value in ware:
-			doc.stock_table[i].warehouse = key 
-			doc.stock_table[i].stock_qty = value
-			i += 1
-	# doc.save()
+		for key in ware:
+			row = doc.append("stock_table",{})
+			row.item_code =  key[1]
+			row.warehouse = key[0]
+			row.stock_qty = ware[key]
+
 	
