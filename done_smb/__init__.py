@@ -80,13 +80,13 @@ def salary_detail(emp_id):
 def employee_detail_arabic(doc):
 	name = ""
 	if doc.arabic_name1:
-		name = name + doc.arabic_name1
+		name = name +" "+ doc.arabic_name1
 	if doc.arabic_name2:
-		name = name + doc.arabic_name2
+		name = name +" " +doc.arabic_name2
 	if doc.arabic_name3:
-		name = name + doc.arabic_name3
+		name = name +" "+ doc.arabic_name3
 	if doc.arabic_name4:
-		name = name + doc.arabic_name4 
+		name = name +" "+ doc.arabic_name4 +" "
 	return name
 
 def annual_leave_form(emp_id, leave_type, from_d, to_d, pos_d):
