@@ -2,7 +2,13 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Custody', {
-	// refresh: function(frm) {
-
-	// }
+	onload: function(frm) {
+		frm.fields_dict['custody_item'].grid.get_field('item').get_query = function(doc){
+			return{
+				filters:{
+					"item_group": "Custody Items"
+				}
+			}
+		}
+	}
 });

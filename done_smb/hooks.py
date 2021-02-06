@@ -141,6 +141,9 @@ jenv = {
 		"get_leave:erpnext.hr.doctype.leave_application.leave_application.get_leave_details",
 		"get_allow:done_smb.get_allowence",
 		"sick_leave:done_smb.get_sick_leave",
-		"indemnity:done_smb.custom.calculate_indemnity"
+		"indemnity:done_smb.custom.calculate_indemnity",
+		"error:done_smb.throw_msg",
+		"total_salary:done_smb.salary_sum",
+		"total_unpaid_days:done_smb.unpaid_days_sum"
 	]
 }
