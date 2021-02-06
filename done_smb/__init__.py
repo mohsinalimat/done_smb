@@ -18,7 +18,7 @@ def leave_allocate_annual():
 	import math
 	from datetime import date, timedelta
 	today = date.today()
-	first_date = today.replace(day = 7)
+	first_date = today.replace(day = 1)
 	if first_date == today:
 		today_list = (today.strftime("%d-%m-%Y")).split("-")
 		employees =  frappe.db.sql("""select name, employee_name from `tabEmployee` where status = "Active" """,as_dict = 1)
