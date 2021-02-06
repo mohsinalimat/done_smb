@@ -18,7 +18,7 @@ def leave_allocate_annual():
 	import math
 	from datetime import date, timedelta
 	today = date.today()
-	first_date = today.replace(day = 6)
+	first_date = today.replace(day = 1)
 	if first_date == today:
 		today_list = (today.strftime("%d-%m-%Y")).split("-")
 		employees =  frappe.db.sql("""select name, employee_name from `tabEmployee` where status = "Active" """,as_dict = 1)
@@ -48,7 +48,7 @@ def leave_allocate_sick():
 	from datetime import date, timedelta
 	leave_types = ["25 Percent unpaid Sick", "50 Percent unpaid Sick", "75 Percent unpaid Sick", "Sick Leave Unpaid", "Sick Leave"]
 	today = date.today()
-	first_date = today.replace(day=6,month=2)
+	first_date = today.replace(day=1,month=1)
 	if first_date == today:
 		today_list = (today.strftime("%d-%m-%Y")).split("-")
 		employees =  frappe.db.sql("""select name, employee_name from `tabEmployee` where status = "Active" """,as_dict = 1)
