@@ -26,6 +26,12 @@ def execute(filters=None):
 			"width": 0	
 		},
 		{
+			"fieldname": "employee_name",
+			"fieldtype": "data",
+			"label": "Employee Name",
+			"width": 0	
+		},
+		{
 			"fieldname": "time_in",
 			"fieldtype": "Time",
 			"label": "Time IN",
@@ -251,10 +257,11 @@ def get_data(filters=None):
 		dict = {}
 		dict["day"] = i.strftime("%A")
 		dict["date"] = i.strftime("%d-%m-%Y")
-		if dict["day"] == 'Friday':
+		if dict["day"] == 'Friday' and len(attendance) == 0:
 			data.append(dict)
 			continue
 		dict['employee'] = filters.employee_id
+		dict['employee_name'] = frappe.db.get_value("Employee", {'name': filters.employee_id}, ['employee_name'])
 		if attendance and attendance[0]['status']== 'Present':
 			in_time = datetime.strptime(attendance[0].in_time, "%H:%M:%S")
 			out_time = datetime.strptime(attendance[0].out_time, "%H:%M:%S")
