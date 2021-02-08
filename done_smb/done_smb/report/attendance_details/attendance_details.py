@@ -20,6 +20,18 @@ def execute(filters=None):
 			"width": 0	
 		},
 		{
+			"fieldname": "employee",
+			"fieldtype": "data",
+			"label": "Employee Id",
+			"width": 0	
+		},
+		{
+			"fieldname": "employee_name",
+			"fieldtype": "data",
+			"label": "Employee Name",
+			"width": 0	
+		},
+		{
 			"fieldname": "time_in",
 			"fieldtype": "Time",
 			"label": "Time IN",
@@ -148,8 +160,26 @@ def execute(filters=None):
 			"width": 0,
 		}
 	]
-	data = get_data(filters)
+	filter_keys = list(filters.keys())
+	data = []
+	if 'employee_id' in filter_keys and'from_date' in filter_keys and 'to_date' in filter_keys:
+		data = get_data(filters)
+	elif 'from_date' in filter_keys and 'to_date' in filter_keys:
+		data = get_all_data(filters)
+
 	return columns, data
+
+def get_all_data(filters):
+	employee = frappe.db.get_list("Employee", order_by='name')
+	result = []
+	filters['employee_id'] = ""
+	for i in employee:
+		filters['employee_id'] = i.name
+		print(i.name)
+		for j in get_data(filters):
+			result.append(j)
+		result.append({})
+	return result
 
 def get_leave(emp_id, from_date, to_date, leave_type='Other Leave'):
 	leave = ['Sick Leave Unpaid', '25 Percent unpaid Sick', '75 Percent unpaid Sick', '50 Percent unpaid Sick', 'Sick Leave']
@@ -207,9 +237,6 @@ def get_date_range(from_date, to_date):
 def get_data(filters=None):
 	data = []
 	y,n = 'Y','N'
-	filter_keys = list(filters.keys())
-	if 'employee_id' not in filter_keys or 'from_date' not in filter_keys or 'to_date' not in filter_keys:
-		return 0
 	to_date = datetime.strptime(filters.to_date, "%Y-%m-%d")
 	from_date = datetime.strptime(filters.from_date, "%Y-%m-%d")
 
@@ -230,6 +257,11 @@ def get_data(filters=None):
 		dict = {}
 		dict["day"] = i.strftime("%A")
 		dict["date"] = i.strftime("%d-%m-%Y")
+		if dict["day"] == 'Friday' and len(attendance) == 0:
+			data.append(dict)
+			continue
+		dict['employee'] = filters.employee_id
+		dict['employee_name'] = frappe.db.get_value("Employee", {'name': filters.employee_id}, ['employee_name'])
 		if attendance and attendance[0]['status']== 'Present':
 			in_time = datetime.strptime(attendance[0].in_time, "%H:%M:%S")
 			out_time = datetime.strptime(attendance[0].out_time, "%H:%M:%S")
