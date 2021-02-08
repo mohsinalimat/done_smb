@@ -28,9 +28,11 @@ def get_status(name, items, is_report):
 
 class CustomOrderContract(Document):
 	def on_submit(self):
-		so = frappe.new_doc("Sales Order")
+		if self.make_sales_invoice == 1:
+			if self.reference_no == "" or self.reference_no == None:
+				frappe.throw("Mandatory field Reference No required in Custom Order Contract")
+		so = frappe.new_doc("Sales Order") # sales order
 		so.coc = self.name
-
 		for i in range(len(self.item)):
 			row = so.append("items",{})
 			row.item_code = self.item[i].item
@@ -39,7 +41,7 @@ class CustomOrderContract(Document):
 		so.save()
 		sales_no = so.name
 		so.submit()
-		for i in range(len(self.item)):
+		for i in range(len(self.item)): # work order
 			wo = frappe.new_doc("Work Order")
 			wo.production_item = self.item[i].item
 			wo.qty = int(self.item[i].qty)
@@ -55,14 +57,19 @@ class CustomOrderContract(Document):
 				ware.source_warehouse = "All Warehouses - DI"
 			wo.save()
 			wo.submit()
-		si = frappe.new_doc("Sales Invoice")
-		si.customer = self.customer
-		for i in self.item:
-			row = si.append("items",{})
-			row.item_code = i.item	
-			row.qty = i.qty
-			row.sales_order = sales_no
-		si.save()
-		si.submit()
+		if self.make_sales_invoice == 1:  # sales invoice
+			si = frappe.new_doc("Sales Invoice")
+			si.customer = self.customer
+			si.reference_no = self.reference_no
+			for i in self.item:
+				row = si.append("items",{})
+				row.item_code = i.item	
+				row.qty = i.qty
+				row.sales_order = sales_no
+			si.save()
+			si.submit()
+		# po = frappe.new_doc("Purchase Order")
+
+		
 
 
