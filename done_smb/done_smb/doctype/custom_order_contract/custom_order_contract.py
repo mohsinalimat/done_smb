@@ -27,10 +27,11 @@ def get_status(name, items, is_report):
 	return status
 
 class CustomOrderContract(Document):
-	def on_submit(self):
+	def validate(self):
 		if self.make_sales_invoice == 1:
 			if self.reference_no == "" or self.reference_no == None:
 				frappe.throw("Mandatory field Reference No required in Custom Order Contract")
+	def on_submit(self):
 		so = frappe.new_doc("Sales Order") # sales order
 		so.coc = self.name
 		for i in range(len(self.item)):
@@ -68,7 +69,17 @@ class CustomOrderContract(Document):
 				row.sales_order = sales_no
 			si.save()
 			si.submit()
-		# po = frappe.new_doc("Purchase Order")
+		po = frappe.new_doc("Purchase Order")
+		po.supplier = self.supplier
+		for i in range(len(self.item)):
+			row = po.append("items",{})
+			row.item_code = self.item[i].item
+			row.schedule_date = self.delivery_date
+			row.qty = self.item[i].qty
+		po.inter_company_order_reference = sales_no
+		po.save()
+		po.submit()
+
 
 		
 

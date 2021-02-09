@@ -17,12 +17,15 @@ def get_columns(filters):
 	{
 		"fieldname":"sales_order",
 		"label": "Sales Order",
-		"fieldtype": "Data",
+		"fieldtype": "Link",
+		"options" : "Sales Order"
 	},
 	{
 		"fieldname":"custom_order_contract",
 		"label": "Custom Order Contract",
-		"fieldtype": "Data",
+		"fieldtype": "Link",
+		"options" : "Custom Order Contract"
+
 	},
 	{
 		"fieldname":"status",
